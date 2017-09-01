@@ -1,0 +1,45 @@
+body {
+    background-color:#EEEEEE;
+    overflow:auto;
+    max-height:100%;
+}
+#nav {
+    line-height:30px;
+    background-color:navajowhite;
+    height:750px;
+    width:250px;
+    position:fixed;
+    right:5px;
+    top: 12px;
+    padding:5px;
+}
+#mapL40 {
+    background-color:white;
+    height:750px;
+    width:1280px;
+    position:relative;
+    left:5px;
+    top: 5px;
+    padding:5px;
+    margin-bottom: 20px;
+}
+#mapL20 {
+    background-color:white;
+    height:750px;
+    width:1280px;
+    position:relative;
+    left:5px;
+    top: 5px;
+    padding:5px;
+    margin-bottom: 10px;
+}
+label.floor {
+    background: transparent;
+    opacity: 0.5;
+    position:relative;
+    left:5px;
+    top: 0px;
+}
+.marb8{
+    margin-bottom:8px;
+}

@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="/static/css/fabmap.css">
+    <title>L20 Layout</title>
+</head>
+<body>
+<div id="mapL20">
+    <label class="floor">L20</label>
+    <svg width="100%" height="100%" version="1.1">
+    {% for one_eq_vertex in all_vertex %}<polygon name="a" points="{{ one_eq_vertex }}" style="fill:#cccccc;stroke:#000000;stroke-width:0.3"/>{% endfor %}
+    <polyline points="{{ path_node }}" style="fill:None;stroke:red;stroke-width:2"/>
+</svg>
+</div>
+</body>
+</html>
