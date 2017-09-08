@@ -85,7 +85,7 @@ DATABASES = {
         'NAME': "fabmap",
         'USER': "root",
         'PASSWORD': "3357186Elvan",
-        'HOST': "127.0.0.1",
+        'HOST': "",
     }
 }
 
@@ -130,3 +130,4 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static")
 ]
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticroot')

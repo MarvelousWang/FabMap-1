@@ -3,8 +3,9 @@ from django.db import models
 
 
 class EQLayout(models.Model):
-    en_name = models.CharField(max_length=50, verbose_name="机台英文名称", default="")
-    cn_name = models.CharField(max_length=50, verbose_name="机台中文名称", default="", null=True, blank=True)
+    en_name = models.CharField(max_length=50, verbose_name="机台名称", default="")
+    # cn_name = models.CharField(max_length=50, verbose_name="机台中文名称", default="", null=True, blank=True)
+    unit = models.CharField(max_length=50, verbose_name="机台子单元名称", default="", null=True, blank=True)
     floor = models.CharField(choices=(("L10", "L10"), ("L20", "L20"), ("L30", "L30"), ("L40", "L40")), max_length=10,
                              verbose_name="楼层", default="楼层未选")
     vertex = models.CharField(max_length=500, verbose_name="顶点坐标", null=False, blank=False)

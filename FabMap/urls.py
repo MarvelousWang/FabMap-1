@@ -13,6 +13,7 @@ Including another URLconf
     1. Import the include() function: from django.conf.urls import url, include
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
+
 from django.conf.urls import url
 from django.views.generic import TemplateView
 import xadmin
@@ -20,6 +21,7 @@ from layout.views import FabmapView, L40View, L20View
 
 
 urlpatterns = [
+    url(r'', FabmapView.as_view(), name="fabmap"),
     url(r'^xadmin/', xadmin.site.urls),
     url(r'^fabmap/$', FabmapView.as_view(), name="fabmap"),
     url(r'^L40/$', L40View.as_view(), name="L40"),
