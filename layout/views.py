@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.views.generic.base import View
-from layout.models import EQLayout, Path
+from layout.models import EQLayout, Nodes, AdjMat, Path
 from .forms import PathForm
 from .minpath import show_paths
 
@@ -16,26 +16,44 @@ from .minpath import show_paths
 3. 浏览器在页面上画出路径
 
 更新设备外框图和路径图
-1. 在xadmin后台更新路径后,重算路径
+1. 在xadmin后台更新路径, 或者数据库导入路径
+2. 在页面上按重新计算路径, 服务器比对node版本与path的版本, 若path版本较旧, 则重新计算path.
 '''
 
 
 class FabmapView(View):
-    # def allvertex(self):
-    #     all_vertex = list(EQLayout.objects.values_list("vertex"))
-    #     if all_vertex:
-    #         all_vertex = [x[0] for x in all_vertex]
-    #         return all_vertex
-    #     else:
-    #         return False
-
     def get(self, request):
         all_vertex = list(EQLayout.objects.values_list("vertex"))
-        if all_vertex:
-            all_vertex = [x[0] for x in all_vertex]
+        all_vertex = [x[0] for x in all_vertex]
+        if not request.GET.get("purpose"):
             return render(request, "fabmap.html", {"all_vertex": all_vertex})
         else:
-            return render(request, "fabmap.html", {"msg": "还未输入任何设备坐标信息!"})
+            if request.GET.get("purpose") == "重算路径":
+                mats = AdjMat.objects.all()
+                if len(mats) > 0:
+                    time_mat = AdjMat.objects.values_list('add_time', flat=True).order_by('-add_time')[0]
+                    time_node = Nodes.objects.values_list('add_time', flat=True).order_by('-add_time')[0]
+                    if time_node < time_mat:
+                        return render(request, "fabmap.html",
+                                      {"all_vertex": all_vertex, "msg1": "路径是最新, 不需重新计算."})
+                newNode = Nodes.objects.all()
+                newMat = self._creat_mat(newnode=newNode)
+            return render(request, "fabmap.html", {"all_vertex": all_vertex, "msg1": request.GET.get("purpose") + "完成"})
+
+    @staticmethod
+    def _creat_mat(newnode):
+        nodelist = newnode.values_list('nodeNo')
+        inf = float("inf")
+        for noderecord in newnode:
+            node_dist = [inf] * len(nodelist)
+            reach_nodes = noderecord.get('reach_node')
+            for i in (0, len(nodelist)-1):
+                if nodelist[i] == noderecord.get('nodeNo'):
+                    node_dist[i] = 0
+                elif nodelist[i] in reach_nodes:
+                    node_dist[i] = noderecord.get('x_axis')
+# 2017-9-10 代码写到此
+
 
     def post(self, request):
         path_form = PathForm(request.POST)
@@ -122,3 +140,5 @@ class L20View(View):
                 return render(request, "L20.html", {"msg": "路径尚未生成!"})
         else:
             return render(request, "L20.html", {"msg": "请输入坐标"})
+
+

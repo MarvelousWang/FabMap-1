@@ -61,11 +61,16 @@
             <label>终点坐标</label>
             <input name="end_point" id="end_point" type="text" placeholder="例:200,200" />
         </div>
-         <input id="jsLoginBtn" type="submit" value="立即查询 > " />
+         <input id="loginBtn" type="submit" value="立即查询 > " />
+        {% csrf_token %}
+    </form>
+    <form action="{% url 'fabmap' %}" method="get" autocomplete="off">
+        <input id="calBtn" type="submit" name="purpose" value="重算路径" />
         {% csrf_token %}
     </form>
     <div>
         <h3>路径轨迹:</h3>
+        <p>{{ msg1 }}</p>
         <p>{{ path_node }}</p>
     </div>
 </div>

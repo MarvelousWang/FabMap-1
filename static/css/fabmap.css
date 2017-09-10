@@ -33,6 +33,16 @@ body {
     padding:5px;
     margin-bottom: 10px;
 }
+#calBtn{
+    padding:5px;
+    position:relative;
+    left:10px
+}
+#loginBtn{
+    padding:5px;
+    position:relative;
+    left:10px
+}
 label.floor {
     background: transparent;
     opacity: 0.5;
