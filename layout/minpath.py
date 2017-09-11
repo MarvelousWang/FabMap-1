@@ -170,26 +170,27 @@ def show_paths(mat, begin, end):
         temp = pathstack[1][temp][end]
         path.append(temp)
     path.append(end)
-    return path, pathstack[0][begin][end]
+    path_length = pathstack[0][begin][end]
+    return path, path_length
 
 
 def cal_path():
     pass
 
 
-# mat = (
-#     (0, inf, 6, 3, inf, inf, inf),
-#     (11, 0, 4, inf, inf, 7, inf),
-#     (inf, 3, 0, inf, 5, inf, inf),
-#     (inf, inf, inf, 0, 5, inf, inf),
-#     (inf, inf, inf, inf, 0, inf, 9),
-#     (inf, inf, inf, inf, inf, 0, 10),
-#     (inf, inf, inf, inf, inf, inf, 0)
-# )
+mat = (
+    (0, inf, 6, 3, inf, inf, inf),
+    (11, 0, 4, inf, inf, 7, inf),
+    (inf, 3, 0, inf, 5, inf, inf),
+    (inf, inf, inf, 0, 5, inf, inf),
+    (inf, inf, inf, inf, 0, inf, 9),
+    (inf, inf, inf, inf, inf, 0, 10),
+    (inf, inf, inf, inf, inf, inf, 0)
+)
 # path1 = dijkstra_paths(graph, 2)
 # path2 = floyd_paths(GraphAL(mat))
 # print(path1)
 # print(path2)
-# for i in range(len(mat)):
-#     for j in range(len(mat)):
-#         print(show_paths(mat, i, j))
+for i in range(len(mat)):
+    for j in range(len(mat)):
+        print(show_paths(mat, i, j))

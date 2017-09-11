@@ -39,6 +39,10 @@ class FabmapView(View):
                                       {"all_vertex": all_vertex, "msg1": "路径是最新, 不需重新计算."})
                 newNode = Nodes.objects.all()
                 newMat = self._creat_mat(newnode=newNode)
+                new_mat = AdjMat()
+                new_mat.mat = newMat
+                new_mat.save()
+# 2017-9-11 写到此处
             return render(request, "fabmap.html", {"all_vertex": all_vertex, "msg1": request.GET.get("purpose") + "完成"})
 
     @staticmethod
@@ -48,32 +52,22 @@ class FabmapView(View):
         mat = [[inf]*len(nodelist)]*len(nodelist)  # 生成inf组成的初始方阵, 但需注意*是浅拷贝, 所以需要重新拷贝一次
         mat1 = [[mat[i][j] for j in range(len(mat))] for i in range(len(mat))]  # 拷贝mat, 消除浅拷贝
         for i in (range(len(nodelist))):
-            mat1[i][i] = 0
+            mat1[i][i] = 0  # 将对角线元素置零
         for i in (range(len(nodelist))):
-            noderow = newnode[i]
-            # for j in (range(len(nodelist))):
-            #     nodecol = newnode[j]
-            for j in list(noderow.reach_node):
-                nodecol = newnode[list(nodelist).index(j)]
+            noderow = newnode[i]  # 逐个取出元素作为行元素
+            temp = noderow.reach_node
+            temp1 = temp.split(',')  # 将字符转换为列表
+            for j in temp1:
+                j = int(j)  # j原来是str, 不能作为列表索引,需转换为数字
+                temp2 = list(nodelist)
+                temp3 = temp2.index(j)
+                nodecol = newnode[temp3]
                 xa = noderow.x_axis
                 ya = noderow.y_axis
                 xb = nodecol.x_axis
                 yb = nodecol.y_axis
-                mat1[i][j] = ((xa - xb)**2 + (ya - yb)**2)**0.5
+                mat1[i][temp3] = round(((xa - xb)**2 + (ya - yb)**2)**0.5, 3)
         return mat1
-
-        # for noderecord in newnode:
-        #     node_dist = [inf] * len(nodelist)
-        #     node_dist[i if nodelist[i] == noderecord.get('nodeNo')] = 0
-        #     reach_nodes = noderecord.get('reach_node')
-        #     for i in (0, len(nodelist)-1):
-                # if nodelist[i] == noderecord.get('nodeNo'):
-                #     node_dist[i] = 0
-                # node_dist[i if nodelist[i] in reach_nodes] = node_distance(noderecord.get('nodeNo'), nodelist[i])
-                # elif nodelist[i] in reach_nodes:
-                #     node_dist[i] = noderecord.get('x_axis')
-# 2017-9-10 代码写到此
-
 
     def post(self, request):
         path_form = PathForm(request.POST)
