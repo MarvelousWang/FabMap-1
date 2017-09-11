@@ -4,6 +4,7 @@ from layout.models import EQLayout, Nodes, AdjMat, Path
 from .forms import PathForm
 from .minpath import show_paths
 
+
 '''
 数据库获取路径的过程:
 1. 浏览器输入起点和终点, 返回服务器
@@ -23,8 +24,8 @@ from .minpath import show_paths
 
 class FabmapView(View):
     def get(self, request):
-        all_vertex = list(EQLayout.objects.values_list("vertex"))
-        all_vertex = [x[0] for x in all_vertex]
+        all_vertex = list(EQLayout.objects.values_list("vertex", flat=True))
+        # all_vertex = [x[0] for x in all_vertex]
         if not request.GET.get("purpose"):
             return render(request, "fabmap.html", {"all_vertex": all_vertex})
         else:
@@ -42,16 +43,35 @@ class FabmapView(View):
 
     @staticmethod
     def _creat_mat(newnode):
-        nodelist = newnode.values_list('nodeNo')
+        nodelist = newnode.values_list('nodeNo',flat=True)
         inf = float("inf")
-        for noderecord in newnode:
-            node_dist = [inf] * len(nodelist)
-            reach_nodes = noderecord.get('reach_node')
-            for i in (0, len(nodelist)-1):
-                if nodelist[i] == noderecord.get('nodeNo'):
-                    node_dist[i] = 0
-                elif nodelist[i] in reach_nodes:
-                    node_dist[i] = noderecord.get('x_axis')
+        mat = [[inf]*len(nodelist)]*len(nodelist)  # 生成inf组成的初始方阵, 但需注意*是浅拷贝, 所以需要重新拷贝一次
+        mat1 = [[mat[i][j] for j in range(len(mat))] for i in range(len(mat))]  # 拷贝mat, 消除浅拷贝
+        for i in (range(len(nodelist))):
+            mat1[i][i] = 0
+        for i in (range(len(nodelist))):
+            noderow = newnode[i]
+            # for j in (range(len(nodelist))):
+            #     nodecol = newnode[j]
+            for j in list(noderow.reach_node):
+                nodecol = newnode[list(nodelist).index(j)]
+                xa = noderow.x_axis
+                ya = noderow.y_axis
+                xb = nodecol.x_axis
+                yb = nodecol.y_axis
+                mat1[i][j] = ((xa - xb)**2 + (ya - yb)**2)**0.5
+        return mat1
+
+        # for noderecord in newnode:
+        #     node_dist = [inf] * len(nodelist)
+        #     node_dist[i if nodelist[i] == noderecord.get('nodeNo')] = 0
+        #     reach_nodes = noderecord.get('reach_node')
+        #     for i in (0, len(nodelist)-1):
+                # if nodelist[i] == noderecord.get('nodeNo'):
+                #     node_dist[i] = 0
+                # node_dist[i if nodelist[i] in reach_nodes] = node_distance(noderecord.get('nodeNo'), nodelist[i])
+                # elif nodelist[i] in reach_nodes:
+                #     node_dist[i] = noderecord.get('x_axis')
 # 2017-9-10 代码写到此
 
 
@@ -68,9 +88,7 @@ class FabmapView(View):
                 end_floor=end_floor,
                 end_point=end_point)
             if path:
-                all_vertex = list(EQLayout.objects.values_list("vertex"))
-                if all_vertex:
-                    all_vertex = [x[0] for x in all_vertex]
+                all_vertex = list(EQLayout.objects.values_list("vertex", flat=True))
                 return render(request, "fabmap.html", {"all_vertex": all_vertex, "path_node": path.path_node})
             else:
                 return render(request, "fabmap.html", {"msg": "路径尚未生成!"})

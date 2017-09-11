@@ -30,8 +30,8 @@ class Nodes(models.Model):
         verbose_name = "节点"
         verbose_name_plural = verbose_name
 
-    def __str__(self):
-        return '{0} {1}({2},{3})'.format(self.nodeNo, self.floor, self.x_axis, self.y_axis)
+    # def __str__(self):
+    #     return '{0} {1}({2},{3})'.format(self.nodeNo, self.floor, self.x_axis, self.y_axis)
 
 
 class AdjMat(models.Model):
