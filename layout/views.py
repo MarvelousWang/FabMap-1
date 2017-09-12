@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.views.generic.base import View
 from layout.models import EQLayout, Nodes, AdjMat, Path
 from .forms import PathForm
-from .minpath import show_paths
+from .minpath import GraphAL, floyd_paths, show_paths
 
 
 '''
@@ -30,29 +30,47 @@ class FabmapView(View):
             return render(request, "fabmap.html", {"all_vertex": all_vertex})
         else:
             if request.GET.get("purpose") == "重算路径":
-                mats = AdjMat.objects.all()
-                if len(mats) > 0:
-                    time_mat = AdjMat.objects.values_list('add_time', flat=True).order_by('-add_time')[0]
+                paths = Path.objects.all()
+                if len(paths) > 0:
+                    time_path = Path.objects.values_list('add_time', flat=True).order_by('-add_time')[0]
                     time_node = Nodes.objects.values_list('add_time', flat=True).order_by('-add_time')[0]
-                    if time_node < time_mat:
+                    if time_node < time_path:
                         return render(request, "fabmap.html",
                                       {"all_vertex": all_vertex, "msg1": "路径是最新, 不需重新计算."})
                 newNode = Nodes.objects.all()
+                nodelist = list(newNode.values_list('nodeNo', flat=True))
                 newMat = self._creat_mat(newnode=newNode)
                 new_mat = AdjMat()
                 new_mat.mat = newMat
-                new_mat.save()
-# 2017-9-11 写到此处
+                new_mat.save()  # 将新的邻接矩阵保存到数据库中
+                graph = GraphAL(newMat)  # 实例化graph
+                pathstack = floyd_paths(graph)  # 计算出所有顶点间路径
+                for start_node in newNode:
+                    for end_node in newNode:
+                        new_path = Path()
+                        new_path.start_floor = start_node.floor
+                        new_path.start_point = '{0},{1}'.format(start_node.x_axis, start_node.y_axis)
+                        new_path.end_floor = end_node.floor
+                        new_path.end_point = '{0},{1}'.format(end_node.x_axis, end_node.y_axis)
+                        temp1 = start_node.nodeNo
+                        temp2 = end_node.nodeNo
+                        temp10 = nodelist.index(temp1)
+                        temp20 = nodelist.index(temp2)
+                        path_node = show_paths(pathstack, temp10, temp20)[0]  # 该路径只是节点名称的序列, 不是节点坐标序列
+                        path_node = [nodelist[path_node[i]] for i in range(len(path_node))]
+                        new_path.path_node = path_node
+                        path_node_axis = ["{0},{1}".format(newNode.get(nodeNo=nodeNo).x_axis, newNode.get(nodeNo=nodeNo).y_axis) for nodeNo in path_node]
+                        new_path.path_axis = " ".join(path_node_axis)
+                        new_path.save()
             return render(request, "fabmap.html", {"all_vertex": all_vertex, "msg1": request.GET.get("purpose") + "完成"})
 
     @staticmethod
     def _creat_mat(newnode):
-        nodelist = newnode.values_list('nodeNo',flat=True)
+        nodelist = newnode.values_list('nodeNo', flat=True)
         inf = float("inf")
-        mat = [[inf]*len(nodelist)]*len(nodelist)  # 生成inf组成的初始方阵, 但需注意*是浅拷贝, 所以需要重新拷贝一次
-        mat1 = [[mat[i][j] for j in range(len(mat))] for i in range(len(mat))]  # 拷贝mat, 消除浅拷贝
+        mat = [[inf for col in range(len(nodelist))] for row in range(len(nodelist))]
         for i in (range(len(nodelist))):
-            mat1[i][i] = 0  # 将对角线元素置零
+            mat[i][i] = 0  # 将对角线元素置零
         for i in (range(len(nodelist))):
             noderow = newnode[i]  # 逐个取出元素作为行元素
             temp = noderow.reach_node
@@ -66,8 +84,8 @@ class FabmapView(View):
                 ya = noderow.y_axis
                 xb = nodecol.x_axis
                 yb = nodecol.y_axis
-                mat1[i][temp3] = round(((xa - xb)**2 + (ya - yb)**2)**0.5, 3)
-        return mat1
+                mat[i][temp3] = round(((xa - xb)**2 + (ya - yb)**2)**0.5, 3)
+        return mat
 
     def post(self, request):
         path_form = PathForm(request.POST)
