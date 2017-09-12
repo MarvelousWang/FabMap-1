@@ -44,14 +44,15 @@ class AdjMat(models.Model):
 
 
 class Path(models.Model):
+    # pathNo = models.AutoField(verbose_name="Path Number", primary_key=True)
     start_floor = models.CharField(choices=(("L10", "L10"), ("L20", "L20"), ("L30", "L30"), ("L40", "L40")), max_length=10,
                              verbose_name="起点楼层", default="楼层未选")
-    start_point = models.CharField(max_length=15, verbose_name="起点坐标", default="", null=False)
+    start_point = models.CharField(max_length=10, verbose_name="起点坐标", default="", null=False)
     end_floor = models.CharField(choices=(("L10", "L10"), ("L20", "L20"), ("L30", "L30"), ("L40", "L40")), max_length=10,
                              verbose_name="终点楼层", default="楼层未选")
-    end_point = models.CharField(max_length=15, verbose_name="终点坐标", default="", null=False)
-    path_node = models.CharField(max_length=2000, verbose_name="路径节点", null=True, blank=True)
-    path_axis = models.CharField(max_length=2000, verbose_name="路径节点坐标", null=True, blank=True)
+    end_point = models.CharField(max_length=10, verbose_name="终点坐标", default="", null=False)
+    path_node = models.TextField(max_length=2000, verbose_name="路径节点", null=True, blank=True)
+    path_axis = models.TextField(max_length=2000, verbose_name="路径节点坐标", null=True, blank=True)
     add_time = models.DateTimeField(default=datetime.now, verbose_name="添加时间")
 
     class Meta:
