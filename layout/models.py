@@ -19,7 +19,7 @@ class EQLayout(models.Model):
 
 
 class Nodes(models.Model):
-    nodeNo = models.AutoField(verbose_name="Node Number", primary_key=True)
+    nodeNo = models.IntegerField(verbose_name="Node No", primary_key=True)
     floor = models.CharField(choices=(("L20", "L20"), ("L40", "L40")), max_length=10, verbose_name="楼层", default="楼层未选")
     x_axis = models.IntegerField(verbose_name="x axis")
     y_axis = models.IntegerField(verbose_name="y axis")
@@ -44,7 +44,6 @@ class AdjMat(models.Model):
 
 
 class Path(models.Model):
-    # pathNo = models.AutoField(verbose_name="Path Number", primary_key=True)
     start_floor = models.CharField(choices=(("L10", "L10"), ("L20", "L20"), ("L30", "L30"), ("L40", "L40")), max_length=10,
                              verbose_name="起点楼层", default="楼层未选")
     start_point = models.CharField(max_length=10, verbose_name="起点坐标", default="", null=False)

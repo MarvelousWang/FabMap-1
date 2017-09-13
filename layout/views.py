@@ -23,7 +23,6 @@ import time
 class FabmapView(View):
     def get(self, request):
         all_vertex = list(EQLayout.objects.values_list("vertex", flat=True))
-        # all_vertex = [x[0] for x in all_vertex]
         if not request.GET.get("purpose"):
             return render(request, "fabmap.html", {"all_vertex": all_vertex})
         else:
@@ -63,6 +62,7 @@ class FabmapView(View):
                             new_path.path_node = path_node
                             new_path.path_axis = path_node
                         new_path.save()
+                    print(time.time() - time1)
                 print(time.time() - time1)
             return render(request, "fabmap.html", {"all_vertex": all_vertex, "msg1": request.GET.get("purpose") + "完成"})
 
