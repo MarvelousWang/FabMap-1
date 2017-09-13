@@ -162,6 +162,8 @@ def floyd_paths(graph):
 
 
 def show_paths(pathstack, start, end):
+    if pathstack[0][start][end] == inf:  # 碰到无法到达的终点, 走这一支路, 否则会发生死循环.
+        return None, inf
     path = [start]  # 将起点装入path中
     temp = start  # temp是临时起点, 以起点作为第一个临时起点
     while pathstack[1][temp][end] != end:
