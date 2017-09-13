@@ -103,7 +103,7 @@ class FabmapView(View):
                 end_point=end_point)
             if path:
                 all_vertex = list(EQLayout.objects.values_list("vertex", flat=True))
-                return render(request, "fabmap.html", {"all_vertex": all_vertex, "path_node": path.path_node})
+                return render(request, "fabmap.html", {"all_vertex": all_vertex, "path_axis": path.path_axis})
             else:
                 return render(request, "fabmap.html", {"msg": "路径尚未生成!"})
         else:
