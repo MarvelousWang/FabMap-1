@@ -82,7 +82,7 @@ WSGI_APPLICATION = 'FabMap.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': "fabmap",
+        'NAME': "fabmap1",
         'USER': "root",
         'PASSWORD': "3357186Elvan",
         'HOST': "",

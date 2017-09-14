@@ -7,33 +7,25 @@
     <link rel="stylesheet" type="text/css" href="/static/css/fabmap.css">
     <script src="/static/js/jquery.min.js" type="text/javascript"></script>
     <script src="/static/js/jquery-migrate-1.2.1.min.js" type="text/javascript"></script>
-<script src="/static/js/jquery-3.2.1.min.js" type="text/javascript">
-{#    $(document).ready(function(){#}
-{#    $('#mapL40').load('http://127.0.0.1:8000/L40/',function(responseText, textStatus, XMLHttpRequest){#}
-{##}
-{#this;//在这里this指向的是当前的DOM对象，即$(".ajax.load")[0]#}
-{##}
-{#//alert(responseText);//请求返回的内容#}
-{#//alert(textStatus);//请求状态：success，error#}
-{#//alert(XMLHttpRequest);//XMLHttpRequest对象#}
-{#}#}
-{#    $('#mapL20').load('L20.html');#}
-{#    var htmlobj;#}
-{#    htmlobj=$.ajax({url:"L40.html",async:false});#}
-{#    $("#mapL40").html(htmlobj.responseText);#}
-{#)})#}
+<script>
+//普通js函数
+function test(event) {
+ event = event || window.event;
+ var x = event.offsetX || event.layerX;
+ var y = event.offsetY || event.layerY;
+ document.getElementById("axis").innerHTML = (x+","+y);
+  }
 </script>
 </head>
 <body>
-
-<div id="mapL40">
+<div class="map" id="mapL40" onmousemove="test(event)">
     <label class="floor">L40</label>
     <svg width="100%" height="100%" version="1.1">
         {% for one_eq_vertex in all_vertex %}<polygon points="{{ one_eq_vertex }}" style="fill:#cccccc;stroke:#000000;stroke-width:0.3"/>{% endfor %}
         <polyline points="{{ path_node }}" style="fill:None;stroke:red;stroke-width:2"/>
     </svg>
 </div>
-<div id="mapL20">
+<div class="map" id="mapL20">
     <label class="floor">L20</label>
     <svg width="100%" height="100%" version="1.1">
         {% for one_eq_vertex in all_vertex %}<polygon points="{{ one_eq_vertex }}" style="fill:#cccccc;stroke:#000000;stroke-width:0.3"/>{% endfor %}
@@ -44,7 +36,7 @@
     <h3>请输入坐标:</h3>
     <form action="{% url 'fabmap' %}" method="post" autocomplete="off">
         <div class="marb8 {% if login_form.errors.username %}errorput{% endif %}">
-            <label>起点楼层</label>
+            <label id="axis">起点楼层</label>
             <input type="radio" name="start_floor" value="L20" />L20
             <input type="radio" name="start_floor" value="L40" />L40
         </div>
@@ -70,7 +62,7 @@
     </form>
     <div>
         <h3>路径轨迹:</h3>
-        <p>{{ msg1 }}</p>
+        <p id="test">{{ msg1 }}</p>
         <p>{{ path_node }}</p>
     </div>
 </div>
