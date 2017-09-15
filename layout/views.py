@@ -23,6 +23,9 @@ import time
 class FabmapView(View):
     def get(self, request):
         all_vertex = list(EQLayout.objects.values_list("vertex", flat=True))
+        node_axis1 = Nodes.objects.values_list('nodeNo', 'floor', 'x_axis', 'y_axis')
+        node_axis2 = [[node_axis1[i][0], [node_axis1[i][1], node_axis1[i][2], node_axis1[i][3]]] for i in range(len(node_axis1))]
+        nodedict = dict(node_axis2)
         if not request.GET.get("purpose"):
             return render(request, "fabmap.html", {"all_vertex": all_vertex})
         else:

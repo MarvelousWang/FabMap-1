@@ -1,37 +1,39 @@
 body {
-    background-color:#EEEEEE;
+    background-color:floralwhite;
     overflow:auto;
     max-height:100%;
 }
 #nav {
     line-height:30px;
     background-color:navajowhite;
-    height:750px;
+    height:765px;
     width:250px;
     position:fixed;
-    right:5px;
-    top: 12px;
+    right:0;
+    top: 10px;
     padding:5px;
 }
 #mapL40 {
-    background-color:white;
-    height:750px;
+    background: transparent;
+    height:775px;
     width:1280px;
     position:relative;
-    left:5px;
-    top: 5px;
-    padding:5px;
-    margin-bottom: 20px;
+    left:0;
+    top:0px;
+    border:black solid thin;
+    padding:0;
+    margin: 5px;
 }
 #mapL20 {
-    background-color:white;
-    height:750px;
+    background: transparent;
+    height:775px;
     width:1280px;
     position:relative;
-    left:5px;
-    top: 5px;
-    padding:5px;
-    margin-bottom: 10px;
+    left:0;
+    top: 0px;
+    border:black solid thin;
+    padding:0;
+    margin:5px;
 }
 #calBtn{
     padding:5px;
@@ -46,9 +48,7 @@ body {
 label.floor {
     background: transparent;
     opacity: 0.5;
-    position:relative;
-    left:5px;
-    top: 0px;
+    float:left;
 }
 .marb8{
     margin-bottom:8px;
