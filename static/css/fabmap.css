@@ -53,3 +53,23 @@ label.floor {
 .marb8{
     margin-bottom:8px;
 }
+#start_point{
+    height:15px;
+    width:140px;
+}
+#end_point{
+    height:15px;
+    width:140px;
+}
+#getBtn1 {
+    background-color:#ffffff;
+    padding: 0px;
+    position: relative;
+    left: 0px
+}
+#getBtn2 {
+    background-color:#ffffff;
+    padding: 0px;
+    position: relative;
+    left: 0px
+}

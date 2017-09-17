@@ -6,24 +6,56 @@
 {#    <script src="/static/js/jquery-migrate-1.2.1.min.js" type="text/javascript"></script>#}
 <script>
 //普通js函数
-function axis(event) {
+function start_axis(event) {
  event = event || window.event;
  var x = event.offsetX || event.layerX;
  var y = event.offsetY || event.layerY;
- document.getElementById("start_point").value = (x+","+y);
-  }
+ if(color_tag1 == 1){
+     document.getElementById('start_point').value = (x+","+y);
+     this.apply(get_axis_state1())
+ }
+}
+function end_axis(event) {
+ event = event || window.event;
+ var x = event.offsetX || event.layerX;
+ var y = event.offsetY || event.layerY;
+ if(color_tag2 == 1){
+     document.getElementById("end_point").value = (x+","+y);
+     this.apply(get_axis_state2())
+ }
+}
+var color_tag1 = 0;
+var color_tag2 = 0;
+var colors1 = [["#ffffff","点我"],["#00ffff","点图"]];
+var colors2 = [["#ffffff","点我"],["#00ffff","点图"]];
+function get_axis_state1() {
+    if(color_tag2 == 0)
+    {
+        color_tag1 = 1 - color_tag1;
+        document.getElementById('getBtn1').style.backgroundColor = colors1[color_tag1][0];
+        document.getElementById('getBtn1').value = colors1[color_tag1][1];
+    }
+}
+function get_axis_state2() {
+    if(color_tag1 == 0 )
+    {
+        color_tag2 = 1 - color_tag2;
+        document.getElementById('getBtn2').style.backgroundColor = colors2[color_tag2][0];
+        document.getElementById('getBtn2').value = colors2[color_tag2][1];
+    }
+}
 </script>
 </head>
-<body>
+<body onload="">
 <label class = floor>&nbsp;&nbsp;L40</label>
-<div id="mapL40" onmousemove="axis(event)">
+<div id="mapL40" onClick="start_axis(event); end_axis(event)">
     <svg width="100%" height="100%" version="1.1">
         {% for one_eq_vertex in all_vertex %}<polygon points="{{ one_eq_vertex }}" style="fill:#cccccc;stroke:#000000;stroke-width:0.3"/>{% endfor %}
         <polyline points="{{ path_node }}" style="fill:None;stroke:red;stroke-width:2"/>
     </svg>
 </div>
 <label class = floor>&nbsp;&nbsp;&nbsp;L20</label>
-<div id="mapL20" onmousemove="axis(event)">
+<div id="mapL20" onClick="start_axis(event); end_axis(event)">
     <svg width="100%" height="100%" version="1.1">
         {% for one_eq_vertex in all_vertex %}<polygon points="{{ one_eq_vertex }}" style="fill:#cccccc;stroke:#000000;stroke-width:0.3"/>{% endfor %}
         <polyline points="{{ path_axis }}" style="fill:None;stroke:red;stroke-width:2"/>
@@ -34,21 +66,23 @@ function axis(event) {
     <form action="{% url 'fabmap' %}" method="post" autocomplete="off">
         <div class="marb8 {% if login_form.errors.username %}errorput{% endif %}">
             <label>起点楼层</label>
-            <input type="radio" name="start_floor" value="L20" />L20
-            <input type="radio" name="start_floor" value="L40" />L40
+            <input type="radio" id="start_floor" name="start_floor" value="L20" />L20
+            <input type="radio" id="start_floor" name="start_floor" value="L40" />L40
         </div>
         <div class="marb8 {% if login_form.errors.username %}errorput{% endif %}">
             <label>起点坐标</label>
             <input name="start_point" id="start_point" type="text" placeholder="例:100,100" />
+            <input id="getBtn1" type="button" name="getBtn" value="点我" onclick="get_axis_state1()" />
         </div>
         <div class="marb8 {% if login_form.errors.username %}errorput{% endif %}">
             <label>终点楼层</label>
-            <input type="radio" name="end_floor" value="L20" />L20
-            <input type="radio" name="end_floor" value="L40" />L40
+            <input type="radio" id="end_floor" name="end_floor" value="L20" />L20
+            <input type="radio" id="end_floor" name="end_floor" value="L40" />L40
         </div>
         <div class="marb8">
             <label>终点坐标</label>
             <input name="end_point" id="end_point" type="text" placeholder="例:200,200" />
+            <input id="getBtn2" type="button" name="getBtn" value="点我" onclick="get_axis_state2()" />
         </div>
          <input id="loginBtn" type="submit" value="立即查询 > " />
         {% csrf_token %}
