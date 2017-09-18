@@ -14,8 +14,9 @@ body {
     padding:5px;
 }
 #mapL40 {
-    background: transparent;
-    height:775px;
+    background: url(/static/image/L40.png);
+    background-size:100%;
+    height:996px;
     width:1280px;
     position:relative;
     left:0;
@@ -25,8 +26,9 @@ body {
     margin: 5px;
 }
 #mapL20 {
-    background: transparent;
-    height:775px;
+    background: url(/static/image/L20.png);
+    background-size:100%;
+    height:978px;
     width:1280px;
     position:relative;
     left:0;
@@ -53,21 +55,11 @@ label.floor {
 .marb8{
     margin-bottom:8px;
 }
-#start_point{
+#start_point,#end_point{
     height:15px;
-    width:140px;
+    width:130px;
 }
-#end_point{
-    height:15px;
-    width:140px;
-}
-#getBtn1 {
-    background-color:#ffffff;
-    padding: 0px;
-    position: relative;
-    left: 0px
-}
-#getBtn2 {
+#getBtn1,#getBtn2{
     background-color:#ffffff;
     padding: 0px;
     position: relative;

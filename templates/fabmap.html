@@ -2,25 +2,28 @@
 <html lang="zh-CN">
 <head>
     <link rel="stylesheet" type="text/css" href="/static/css/fabmap.css">
+    <script src="http://cdn.static.runoob.com/libs/jquery/1.10.2/jquery.min.js"></script>
 {#    <script src="/static/js/jquery.min.js" type="text/javascript"></script>#}
 {#    <script src="/static/js/jquery-migrate-1.2.1.min.js" type="text/javascript"></script>#}
 <script>
 //普通js函数
-function start_axis(event) {
+function start_axis(event, floor) {
  event = event || window.event;
  var x = event.offsetX || event.layerX;
  var y = event.offsetY || event.layerY;
  if(color_tag1 == 1){
      document.getElementById('start_point').value = (x+","+y);
+     document.getElementById('start_floor'+ floor).checked = true;
      this.apply(get_axis_state1())
  }
 }
-function end_axis(event) {
+function end_axis(event, floor) {
  event = event || window.event;
  var x = event.offsetX || event.layerX;
  var y = event.offsetY || event.layerY;
  if(color_tag2 == 1){
-     document.getElementById("end_point").value = (x+","+y);
+     document.getElementById('end_point').value = (x+","+y);
+     document.getElementById('end_floor'+ floor).checked = true;
      this.apply(get_axis_state2())
  }
 }
@@ -47,27 +50,13 @@ function get_axis_state2() {
 </script>
 </head>
 <body onload="">
-<label class = floor>&nbsp;&nbsp;L40</label>
-<div id="mapL40" onClick="start_axis(event); end_axis(event)">
-    <svg width="100%" height="100%" version="1.1">
-        {% for one_eq_vertex in all_vertex %}<polygon points="{{ one_eq_vertex }}" style="fill:#cccccc;stroke:#000000;stroke-width:0.3"/>{% endfor %}
-        <polyline points="{{ path_node }}" style="fill:None;stroke:red;stroke-width:2"/>
-    </svg>
-</div>
-<label class = floor>&nbsp;&nbsp;&nbsp;L20</label>
-<div id="mapL20" onClick="start_axis(event); end_axis(event)">
-    <svg width="100%" height="100%" version="1.1">
-        {% for one_eq_vertex in all_vertex %}<polygon points="{{ one_eq_vertex }}" style="fill:#cccccc;stroke:#000000;stroke-width:0.3"/>{% endfor %}
-        <polyline points="{{ path_axis }}" style="fill:None;stroke:red;stroke-width:2"/>
-    </svg>
-</div>
 <div id="nav">
     <h3>请输入坐标:</h3>
     <form action="{% url 'fabmap' %}" method="post" autocomplete="off">
         <div class="marb8 {% if login_form.errors.username %}errorput{% endif %}">
             <label>起点楼层</label>
-            <input type="radio" id="start_floor" name="start_floor" value="L20" />L20
-            <input type="radio" id="start_floor" name="start_floor" value="L40" />L40
+            <input type="radio" id="start_floorL20" name="start_floor" value="L20" />L20
+            <input type="radio" id="start_floorL40" name="start_floor" value="L40" />L40
         </div>
         <div class="marb8 {% if login_form.errors.username %}errorput{% endif %}">
             <label>起点坐标</label>
@@ -76,8 +65,8 @@ function get_axis_state2() {
         </div>
         <div class="marb8 {% if login_form.errors.username %}errorput{% endif %}">
             <label>终点楼层</label>
-            <input type="radio" id="end_floor" name="end_floor" value="L20" />L20
-            <input type="radio" id="end_floor" name="end_floor" value="L40" />L40
+            <input type="radio" id="end_floorL20" name="end_floor" value="L20" />L20
+            <input type="radio" id="end_floorL40" name="end_floor" value="L40" />L40
         </div>
         <div class="marb8">
             <label>终点坐标</label>
@@ -96,6 +85,20 @@ function get_axis_state2() {
         <p id="test">{{ msg1 }}</p>
         <p>{{ path_node }}</p>
     </div>
+</div>
+<label class = floor>&nbsp;&nbsp;L40</label>
+<div id="mapL40" onClick="start_axis(event,'L40'); end_axis(event,'L40')">
+    <svg width="100%" height="100%" version="1.1">
+        {% for one_eq_vertex in all_vertex %}<polygon points="{{ one_eq_vertex }}" style="fill:#cccccc;stroke:#000000;stroke-width:0.3"/>{% endfor %}
+        <polyline points="{{ path_node }}" style="fill:None;stroke:red;stroke-width:2"/>
+    </svg>
+</div>
+<label class = floor>&nbsp;&nbsp;&nbsp;L20</label>
+<div id="mapL20" onClick="start_axis(event,'L20'); end_axis(event,'L20')">
+    <svg width="100%" height="100%" version="1.1">
+        {% for one_eq_vertex in all_vertex %}<polygon points="{{ one_eq_vertex }}" style="fill:#cccccc;stroke:#000000;stroke-width:0.3"/>{% endfor %}
+        <polyline points="{{ path_axis }}" style="fill:None;stroke:red;stroke-width:2"/>
+    </svg>
 </div>
 </body>
 </html>
