@@ -1,6 +1,6 @@
 body {
     background-color:floralwhite;
-    overflow:auto;
+    /*overflow:auto;*/
     max-height:100%;
 }
 #nav {
@@ -16,11 +16,12 @@ body {
 #mapL40 {
     background: url(/static/image/L40.png);
     background-size:100%;
+    opacity: 0.85;
     height:996px;
     width:1280px;
     position:relative;
     left:0;
-    top:0px;
+    top:0;
     border:black solid thin;
     padding:0;
     margin: 5px;
@@ -28,6 +29,7 @@ body {
 #mapL20 {
     background: url(/static/image/L20.png);
     background-size:100%;
+    opacity: 0.85;
     height:978px;
     width:1280px;
     position:relative;
@@ -49,7 +51,7 @@ body {
 }
 label.floor {
     background: transparent;
-    opacity: 0.5;
+    opacity: 1;
     float:left;
 }
 .marb8{

@@ -6,15 +6,15 @@
 {#    <script src="/static/js/jquery.min.js" type="text/javascript"></script>#}
 {#    <script src="/static/js/jquery-migrate-1.2.1.min.js" type="text/javascript"></script>#}
 <script>
-//普通js函数
 function start_axis(event, floor) {
  event = event || window.event;
  var x = event.offsetX || event.layerX;
  var y = event.offsetY || event.layerY;
  if(color_tag1 == 1){
      document.getElementById('start_point').value = (x+","+y);
-     document.getElementById('start_floor'+ floor).checked = true;
-     this.apply(get_axis_state1())
+     document.getElementById('start_floorL'+ floor).checked = true;
+     get_axis_state1();
+     show('startpic',floor);
  }
 }
 function end_axis(event, floor) {
@@ -23,8 +23,9 @@ function end_axis(event, floor) {
  var y = event.offsetY || event.layerY;
  if(color_tag2 == 1){
      document.getElementById('end_point').value = (x+","+y);
-     document.getElementById('end_floor'+ floor).checked = true;
-     this.apply(get_axis_state2())
+     document.getElementById('end_floorL'+ floor).checked = true;
+     get_axis_state2();
+     show('endpic',floor);
  }
 }
 var color_tag1 = 0;
@@ -47,6 +48,18 @@ function get_axis_state2() {
         document.getElementById('getBtn2').value = colors2[color_tag2][1];
     }
 }
+
+function show(id,fl){
+    var img = document.getElementById(id);
+    var wid = img.width;
+    var hig = img.height;
+    var div = document.getElementById("mapL"+ fl);
+{#    下面两句中需要加document.body.scrollLeft和document.body.scrollTop, 否则当浏览器滚动条往下拉时, 不能正确抓取坐标.#}
+    img.style.left = event.x + document.body.scrollLeft - wid/2 + "px";
+    img.style.top  = event.y + document.body.scrollTop - hig + "px";
+    img.style.visibility = "visible";
+}
+
 </script>
 </head>
 <body onload="">
@@ -87,18 +100,20 @@ function get_axis_state2() {
     </div>
 </div>
 <label class = floor>&nbsp;&nbsp;L40</label>
-<div id="mapL40" onClick="start_axis(event,'L40'); end_axis(event,'L40')">
+<div id="mapL40" onClick="start_axis(event,'40'); end_axis(event,'40')">
     <svg width="100%" height="100%" version="1.1">
         {% for one_eq_vertex in all_vertex %}<polygon points="{{ one_eq_vertex }}" style="fill:#cccccc;stroke:#000000;stroke-width:0.3"/>{% endfor %}
         <polyline points="{{ path_node }}" style="fill:None;stroke:red;stroke-width:2"/>
     </svg>
 </div>
 <label class = floor>&nbsp;&nbsp;&nbsp;L20</label>
-<div id="mapL20" onClick="start_axis(event,'L20'); end_axis(event,'L20')">
+<div id="mapL20" onClick="start_axis(event,'20'); end_axis(event,'20')">
     <svg width="100%" height="100%" version="1.1">
         {% for one_eq_vertex in all_vertex %}<polygon points="{{ one_eq_vertex }}" style="fill:#cccccc;stroke:#000000;stroke-width:0.3"/>{% endfor %}
         <polyline points="{{ path_axis }}" style="fill:None;stroke:red;stroke-width:2"/>
     </svg>
 </div>
+<img src="/static/image/start.png" id="startpic" style="visibility:hidden;position:absolute;width: 50px;height: 50px;">
+<img src="/static/image/end.png" id="endpic" style="visibility:hidden;position:absolute;width: 50px;height: 50px;">
 </body>
 </html>
