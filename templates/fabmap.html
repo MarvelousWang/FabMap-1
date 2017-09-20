@@ -14,7 +14,7 @@ function start_axis(event, floor) {
      document.getElementById('start_point').value = (x+","+y);
      document.getElementById('start_floorL'+ floor).checked = true;
      get_axis_state1();
-     show('startpic',floor);
+     show('startpic');
  }
 }
 function end_axis(event, floor) {
@@ -25,7 +25,7 @@ function end_axis(event, floor) {
      document.getElementById('end_point').value = (x+","+y);
      document.getElementById('end_floorL'+ floor).checked = true;
      get_axis_state2();
-     show('endpic',floor);
+     show('endpic');
  }
 }
 var color_tag1 = 0;
@@ -49,14 +49,12 @@ function get_axis_state2() {
     }
 }
 
-function show(id,fl){
+function show(id){
     var img = document.getElementById(id);
     var wid = img.width;
     var hig = img.height;
-    var div = document.getElementById("mapL"+ fl);
-{#    下面两句中需要加document.body.scrollLeft和document.body.scrollTop, 否则当浏览器滚动条往下拉时, 不能正确抓取坐标.#}
-    img.style.left = event.x + document.body.scrollLeft - wid/2 + "px";
-    img.style.top  = event.y + document.body.scrollTop - hig + "px";
+    img.style.left = event.pageX - wid/2 + "px";
+    img.style.top  = event.pageY - hig + "px";
     img.style.visibility = "visible";
 }
 
