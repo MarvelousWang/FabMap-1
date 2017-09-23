@@ -4,6 +4,7 @@ from layout.models import EQLayout, Nodes, AdjMat, Path
 from .forms import PathForm
 from .minpath import GraphAL, floyd_paths, show_paths
 import time
+import re
 
 
 '''
@@ -22,12 +23,10 @@ import time
 
 class FabmapView(View):
     def get(self, request):
-        all_vertex = list(EQLayout.objects.values_list("vertex", flat=True))
-        node_axis1 = Nodes.objects.values_list('nodeNo', 'floor', 'x_axis', 'y_axis')
-        node_axis2 = [[node_axis1[i][0], [node_axis1[i][1], node_axis1[i][2], node_axis1[i][3]]] for i in range(len(node_axis1))]
-        nodedict = dict(node_axis2)
+        l20_vertex = list(EQLayout.objects.filter(floor="L20").values_list("vertex", flat=True))
+        l40_vertex = list(EQLayout.objects.filter(floor="L40").values_list("vertex", flat=True))
         if not request.GET.get("purpose"):
-            return render(request, "fabmap.html", {"all_vertex": all_vertex})
+            return render(request, "fabmap.html", {"l20_vertex": l20_vertex, "l40_vertex": l40_vertex})
         else:
             if request.GET.get("purpose") == "重算路径":
                 paths = Path.objects.all()
@@ -36,7 +35,7 @@ class FabmapView(View):
                     time_node = Nodes.objects.values_list('add_time', flat=True).order_by('-add_time')[0]
                     if time_node < time_path:
                         return render(request, "fabmap.html",
-                                      {"all_vertex": all_vertex, "msg1": "路径是最新, 不需重新计算."})
+                                      {"l20_vertex": l20_vertex, "l40_vertex": l40_vertex, "msg1": "路径是最新, 不需重新计算."})
                 newNode = Nodes.objects.all()
                 nodelist = list(newNode.values_list('nodeNo', flat=True))
                 newMat = self._creat_mat(newnode=newNode)
@@ -67,7 +66,7 @@ class FabmapView(View):
                         new_path.save()
                     print(time.time() - time1)
                 print(time.time() - time1)
-            return render(request, "fabmap.html", {"all_vertex": all_vertex, "msg1": request.GET.get("purpose") + "完成"})
+            return render(request, "fabmap.html", {"l20_vertex": l20_vertex, "l40_vertex": l40_vertex, "msg1": request.GET.get("purpose") + "完成"})
 
     @staticmethod
     def _creat_mat(newnode):
@@ -105,75 +104,18 @@ class FabmapView(View):
                 end_floor=end_floor,
                 end_point=end_point)
             if path:
-                all_vertex = list(EQLayout.objects.values_list("vertex", flat=True))
-                return render(request, "fabmap.html", {"all_vertex": all_vertex, "path_axis": path.path_axis})
+                l20_vertex = list(EQLayout.objects.filter(floor="L20").values_list("vertex", flat=True))
+                l40_vertex = list(EQLayout.objects.filter(floor="L40").values_list("vertex", flat=True))
+                return render(request, "fabmap.html", {"l20_vertex": l20_vertex, "l40_vertex": l40_vertex, "path_axis": path.path_axis})
             else:
                 return render(request, "fabmap.html", {"msg": "路径尚未生成!"})
         else:
             return render(request, "fabmap.html", {"msg": "请输入坐标"})
 
 
-class L40View(View):
-    def get(self, request):
-        all_vertex = list(EQLayout.objects.values_list("vertex"))
-        if all_vertex:
-            all_vertex = [x[0] for x in all_vertex]
-            return render(request, "L40.html", {"all_vertex": all_vertex})
-        else:
-            return render(request, "L40.html", {"msg": "还未输入任何设备坐标信息!"})
-
-    def post(self, request):
-        path_form = PathForm(request.POST)
-        if path_form.is_valid():  # 检查login_form是否出错, 没出错的才验证用户名和密码
-            start_floor = request.POST.get("start_floor", "")
-            start_point = request.POST.get("start_point", "")
-            end_floor = request.POST.get("end_floor", "")
-            end_point = request.POST.get("end_point", "")
-            path = Path.objects.get(
-                start_floor=start_floor,
-                start_point=start_point,
-                end_floor=end_floor,
-                end_point=end_point)
-            if path:
-                all_vertex = list(EQLayout.objects.values_list("vertex"))
-                if all_vertex:
-                    all_vertex = [x[0] for x in all_vertex]
-                return render(request, "L40.html", {"all_vertex": all_vertex, "path_node": path.path_node})
-            else:
-                return render(request, "L40.html", {"msg": "路径尚未生成!"})
-        else:
-            return render(request, "L40.html", {"msg": "请输入坐标"})
-
-
-class L20View(View):
-    def get(self, request):
-        all_vertex = list(EQLayout.objects.values_list("vertex"))
-        if all_vertex:
-            all_vertex = [x[0] for x in all_vertex]
-            return render(request, "L20.html", {"all_vertex": all_vertex})
-        else:
-            return render(request, "L20.html", {"msg": "还未输入任何设备坐标信息!"})
-
-    def post(self, request):
-        path_form = PathForm(request.POST)
-        if path_form.is_valid():  # 检查login_form是否出错, 没出错的才验证用户名和密码
-            start_floor = request.POST.get("start_floor", "")
-            start_point = request.POST.get("start_point", "")
-            end_floor = request.POST.get("end_floor", "")
-            end_point = request.POST.get("end_point", "")
-            path = Path.objects.get(
-                start_floor=start_floor,
-                start_point=start_point,
-                end_floor=end_floor,
-                end_point=end_point)
-            if path:
-                all_vertex = list(EQLayout.objects.values_list("vertex"))
-                if all_vertex:
-                    all_vertex = [x[0] for x in all_vertex]
-                return render(request, "L20.html", {"all_vertex": all_vertex, "path_node": path.path_node})
-            else:
-                return render(request, "L20.html", {"msg": "路径尚未生成!"})
-        else:
-            return render(request, "L20.html", {"msg": "请输入坐标"})
-
+def input_match(inputcontent,floor):  # 将输入框的内容转化为节点名称
+    if re.match([0-9],inputcontent)
+    axislist = list(Nodes.objects.filter(floor=floor).values_list("x_axis", "y_axis", flat=True))
+    x = inputcontent.split(",")[0]
+    y = inputcontent.split(",")[1]
 
