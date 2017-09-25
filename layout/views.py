@@ -24,6 +24,7 @@ import re
 class FabmapView(View):
     def get(self, request):
         l20_vertex = list(EQLayout.objects.filter(floor="L20").values_list("vertex", flat=True))
+
         l40_vertex = list(EQLayout.objects.filter(floor="L40").values_list("vertex", flat=True))
         if not request.GET.get("purpose"):
             return render(request, "fabmap.html", {"l20_vertex": l20_vertex, "l40_vertex": l40_vertex})
@@ -120,14 +121,15 @@ def input_match(inputcontent,floor):  # 将输入框的内容转化为节点名�
     if matchobj:
         x = int(matchobj.group(1))
         y = int(matchobj.group(2))
+        Nodesquery = Nodes.objects
+        axislist = list(Nodesquery.filter(floor=floor).values_list("x_axis", "y_axis"))
+        distances = [((axislist[i][0] - x) ** 2 + (axislist[i][1] - y) ** 2) ** 0.5 for i in
+                     range(len(axislist))]  # 求各node到(x,y)的距离
+        min_index = distances.index(min(distances))  # 求最小距离对应index
+        node_x = axislist[min_index][0]
+        node_y = axislist[min_index][1]
+        nodeNo = Nodesquery.get(floor=floor, x_axis=node_x, y_axis=node_y).nodeNo
+        return nodeNo
     else:
         pass  # 如果匹配到机台名称, 则到数据库中找对应机台坐标
-    Nodesquery = Nodes.objects.all()
-    axislist = list(Nodesquery.filter(floor=floor).values_list("x_axis", "y_axis"))
-    distances = [((axislist[i][0] - x)**2 + (axislist[i][1] - y)**2)**0.5 for i in range(len(axislist))]  # 求各node到(x,y)的距离
-    min_index = distances.index(min(distances))  # 求最小距离对应index
-    node_x = axislist[min_index][0]
-    node_y = axislist[min_index][1]
-    nodeNo = Nodesquery.filter(floor=floor, x_axis=node_x, y_axis=node_y).get('nodeNo')
-    return nodeNo
 
